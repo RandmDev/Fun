@@ -16,7 +16,7 @@ const admin = {
             const hashedPassword = CryptoJS.SHA256(hashedPasswordi).toString();
           
             if(hashedUsername === admin.userHash && hashedPassword === admin.passwordHash) {
-                console.log(text);
+                document.getElementById('message').textContent = text;
             } else {
                 document.getElementById('message').textContent = "Hatalı kullanıcı adı veya şifre!";
             }
