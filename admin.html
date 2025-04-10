@@ -21,7 +21,7 @@
             const hashedUsername = CryptoJS.SHA256(username).toString();loop++;}
             loop=0;
             while (loop < admin.passwordHashTime) {
-            const hashedPassword = CryptoJS.SHA256(hashedPasswordi).toString();loop++;}
+            const hashedPassword = CryptoJS.SHA256(password).toString();loop++;}
             loop=0;
           
             if(hashedUsername === admin.userHash && hashedPassword === admin.passwordHash) {
