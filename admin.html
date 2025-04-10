@@ -13,17 +13,16 @@
 
         function login(event) {
             event.preventDefault();
-            while (loop < userHashTime) {
-            const username = document.getElementById('username').value; loop++;};
-            loop = 0;
-            while (loop < passwordHashTime) {
-            const username = document.getElementById('password').value; loop++;};
-            loop = 0;
+            const username = document.getElementById('username').value;
+            const username = document.getElementById('password').value;
             const text = document.getElementById('text').value;
 
-          
-            const hashedUsername = CryptoJS.SHA256(username).toString();
-            const hashedPassword = CryptoJS.SHA256(hashedPasswordi).toString();
+            while (loop < admin.userHashTime) {
+            const hashedUsername = CryptoJS.SHA256(username).toString();loop++;}
+            loop=0;
+            while (loop < admin.passwordHashTime) {
+            const hashedPassword = CryptoJS.SHA256(hashedPasswordi).toString();loop++;}
+            loop=0;
           
             if(hashedUsername === admin.userHash && hashedPassword === admin.passwordHash) {
                 document.getElementById('message').textContent = "bu bir test mesajıdır | -BETA-";
