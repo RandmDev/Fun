@@ -3,34 +3,39 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>Admin Giriş</title>
     <script>
-        var loop = 0;
-        const admin = {
-            userHash: "a0056c7a42dbbb427642c8a01b945b4e4f35e87de937daa6358a9be14b2a2be3",
-            passwordHash: "94ba809b4039ccb7fae123c146abaff0118c167247139c2c61df99ca9f03e286",
-            userHashTime: 1,
-            passwordHashTime: 2
-        };
+    const admin = {
+        userHash: "a0056c7a42dbbb427642c8a01b945b4e4f35e87de937daa6358a9be14b2a2be3",
+        passwordHash: "94ba809b4039ccb7fae123c146abaff0118c167247139c2c61df99ca9f03e286",
+        userHashTime: 1,
+        passwordHashTime: 2
+    };
 
-        function login(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const text = document.getElementById('text').value;
+    function login(event) {
+        event.preventDefault();
 
-            while (loop < admin.userHashTime) {
-            const hashedUsername = CryptoJS.SHA256(username).toString();loop++;}
-            loop=0;
-            while (loop < admin.passwordHashTime) {
-            const hashedPassword = CryptoJS.SHA256(password).toString();loop++;}
-            loop=0;
-          
-            if(hashedUsername === admin.userHash && hashedPassword === admin.passwordHash) {
-                document.getElementById('message').textContent = "bu bir test mesajıdır | -BETA-";
-            } else {
-                document.getElementById('message').textContent = "Hatalı kullanıcı adı veya şifre!";
-            }
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Kullanıcı adını admin.userHashTime kadar hash'le
+        let hashedUsername = username;
+        for (let i = 0; i < admin.userHashTime; i++) {
+            hashedUsername = CryptoJS.SHA256(hashedUsername).toString();
         }
-    </script>
+
+        // Şifreyi admin.passwordHashTime kadar hash'le
+        let hashedPassword = password;
+        for (let i = 0; i < admin.passwordHashTime; i++) {
+            hashedPassword = CryptoJS.SHA256(hashedPassword).toString();
+        }
+
+        if (hashedUsername === admin.userHash && hashedPassword === admin.passwordHash) {
+            document.getElementById('message').textContent = "bu bir test mesajıdır | -BETA-";
+        } else {
+            document.getElementById('message').textContent = "Hatalı kullanıcı adı veya şifre!";
+        }
+    }
+</script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
