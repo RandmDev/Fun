@@ -5,7 +5,7 @@
     <style>
       body {
         background-color: black;
-        color: white; /* Metin rengi eklendi */
+        color: white;
         font-family: Arial;
         padding: 20px;
       }
@@ -16,18 +16,31 @@
         padding: 10px;
         margin: 10px 0;
       }
+      /* DÜZELTME: Buton için doğru CSS seçici */
+      #redirectButton {
+        height: 30px;
+        width: 75px;
+        background-color: rgb(30,30,30);
+        color: white;
+        border: none;
+        cursor: pointer; /* El işareti eklendi */
+      }
+      #redirectButton:hover {
+        background-color: rgb(50,50,50); /* Hover efekti */
+      }
     </style>
   </head>
   <body>
     <h2>AnoChat</h2>
     <div id="chatBox"></div>
+    <!-- DÜZELTME: div yerine button elementi -->
+    <button id="redirectButton">Git</button>
 
     <script>
       const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
       const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M';
       const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       
-      // ChatBox elementini seç
       const chatBox = document.getElementById('chatBox');
 
       async function fetchMessages() {
@@ -50,13 +63,18 @@
       function appendMessage(msg) {
         const div = document.createElement('div');
         div.textContent = `${msg.user_name}: ${msg.content}`;
-        div.style.margin = "5px 0"; // Mesaj aralıkları
+        div.style.margin = "5px 0";
         chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight; // Otomatik scroll
+        chatBox.scrollTop = chatBox.scrollHeight;
       }
 
-      // DOM yüklendikten sonra çalıştır
-      document.addEventListener('DOMContentLoaded', fetchMessages);
+      // DÜZELTME: Doğru element ID'si ve DOM yükleme kontrolü
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchMessages();
+        document.getElementById("redirectButton").addEventListener("click", function() {
+          window.location.href = "https://randmdev.github.io/Fun/"; 
+        });
+      });
     </script>
   </body>
 </html>
