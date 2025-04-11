@@ -4,137 +4,58 @@
     <meta charset="UTF-8">
     <title>Admin Mesaj Paneli</title>
     
-    <!-- Gerekli Kütüphaneler -->
+    <!-- Kütüphaneler -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     
     <style>
-        /* CSS Listesi */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f5ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            width: 350px;
-        }
-
-        ul.form-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        li.form-item {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #2980b9;
-        }
-
-        #message {
-            text-align: center;
-            margin-top: 1rem;
-            color: #e74c3c;
-            font-size: 14px;
-        }
+        /* CSS Listesi Aynı Kalıyor */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f5ff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 350px; }
+        ul.form-list { list-style: none; padding: 0; margin: 0; }
+        li.form-item { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #2c3e50; font-weight: 600; }
+        input { width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; box-sizing: border-box; transition: border-color 0.3s; }
+        input:focus { border-color: #3498db; outline: none; }
+        button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; transition: background 0.3s; }
+        button:hover { background: #2980b9; }
+        #message { text-align: center; margin-top: 1rem; color: #e74c3c; font-size: 14px; }
     </style>
 </head>
 <body>
-    <!-- HTML Listesi -->
+    <!-- HTML Listesi Aynı -->
     <div class="container">
         <h2 style="text-align: center; color: #2c3e50;">Admin Mesaj Gönder</h2>
         <form id="loginForm" onsubmit="return login(event)">
             <ul class="form-list">
-                <li class="form-item">
-                    <label for="username">Kullanıcı Adı</label>
-                    <input type="text" id="username" required>
-                </li>
-                
-                <li class="form-item">
-                    <label for="password">Şifre</label>
-                    <input type="password" id="password" required>
-                </li>
-                
-                <li class="form-item">
-                    <label for="text">Mesaj İçeriği</label>
-                    <input type="text" id="text">
-                </li>
-                
-                <li class="form-item">
-                    <label for="sn">Görünen İsim</label>
-                    <input type="text" id="sn">
-                </li>
-                
-                <li class="form-item">
-                    <button type="submit">Mesajı Gönder</button>
-                </li>
+                <li class="form-item"><label for="username">Kullanıcı Adı</label><input type="text" id="username" required></li>
+                <li class="form-item"><label for="password">Şifre</label><input type="password" id="password" required></li>
+                <li class="form-item"><label for="text">Mesaj İçeriği</label><input type="text" id="text"></li>
+                <li class="form-item"><label for="sn">Görünen İsim</label><input type="text" id="sn"></li>
+                <li class="form-item"><button type="submit">Mesajı Gönder</button></li>
             </ul>
             <div id="message"></div>
         </form>
     </div>
 
     <script>
-        // JavaScript Fonksiyonları
-        const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M';
-
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        const admin = {
+        // JavaScript Düzeltmesi: Admin tanımı üste alındı
+        const admin = { // ✅ Önce admin tanımlandı
             userHash: "a0056c7a42dbbb427642c8a01b945b4e4f35e87de937daa6358a9be14b2a2be3",
             passwordHash: "94ba809b4039ccb7fae123c146abaff0118c167247139c2c61df99ca9f03e286",
             userHashTime: 1,
             passwordHashTime: 2
         };
 
+        const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M';
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // ✅ Artık admin tanımlı
+
         async function login(event) {
             event.preventDefault();
 
-            // Elementlerin Listesi
+            // Element listesi
             const elements = {
                 username: document.getElementById('username').value,
                 password: document.getElementById('password').value,
@@ -142,39 +63,34 @@
                 displayName: document.getElementById('sn').value || 'anon'
             };
 
-            // Hash Hesaplama Fonksiyonu
+            // Hash fonksiyonu
             const calculateHash = (value, iterations) => {
                 let hash = value;
-                for(let i = 0; i < iterations; i++) {
-                    hash = CryptoJS.SHA256(hash).toString();
-                }
+                for(let i = 0; i < iterations; i++) hash = CryptoJS.SHA256(hash).toString();
                 return hash;
             };
 
             try {
-                // Kimlik Doğrulama
-                const isAuthenticated = (
+                // Kimlik doğrulama
+                const isAuth = (
                     calculateHash(elements.username, admin.userHashTime) === admin.userHash &&
                     calculateHash(elements.password, admin.passwordHashTime) === admin.passwordHash
                 );
+                if(!isAuth) throw new Error("Geçersiz kimlik bilgileri!");
 
-                if(!isAuthenticated) throw new Error("Hatalı giriş!");
-
-                // Mesaj Gönderme
+                // Veri gönderme
                 const { error } = await supabase
                     .from('messages')
-                    .insert([{
-                        content: elements.messageInput.value,
-                        user_name: elements.displayName
+                    .insert([{ 
+                        content: elements.messageInput.value, 
+                        user_name: elements.displayName 
                     }]);
 
-                if(error) throw error;
-
-                // Başarılı Durumu
-                document.getElementById('message').textContent = "✅ Mesaj başarıyla gönderildi!";
-                elements.messageInput.value = '';
+                error ? 
+                    document.getElementById('message').textContent = `⛔ Hata: ${error.message}` : 
+                    (document.getElementById('message').textContent = "✅ Mesaj gönderildi!", elements.messageInput.value = '');
                 
-            } catch (error) {
+            } catch(error) {
                 document.getElementById('message').textContent = `⛔ Hata: ${error.message}`;
             }
         }
