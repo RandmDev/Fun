@@ -52,6 +52,7 @@
                 const password = document.getElementById('password').value;
                 const content = document.getElementById('text').value;
                 const userName = document.getElementById('sn').value || 'anon';
+                const imgUrl = document.getElementById('img_url').value || null;
 
                 let hashedUser = username;
                 for(let i = 0; i < admin.userHashTime; i++) hashedUser = CryptoJS.SHA256(hashedUser).toString();
@@ -63,7 +64,8 @@
                 
                 const { error } = await supabase.from('messages').insert([{ 
                     content, 
-                    user_name: userName 
+                    user_name: userName,
+                    img_url: imgUrl
                 }]);
 
                 if(error) throw error;
