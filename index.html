@@ -1,4 +1,4 @@
-<html>
+<html> 
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -8,6 +8,7 @@
         color: white;
         font-family: Arial;
         padding: 20px;
+        margin: 0;
       }
       #chatBox {
         height: 300px;
@@ -16,28 +17,29 @@
         padding: 10px;
         margin: 10px 0;
       }
-      /* DÜZELTME: Buton için doğru CSS seçici */
       #redirectButton {
-        position: absolute;
-        left: 430px;
-        top: 5%;
-        height: 30px;
-        width: 75px;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        height: 40px;
+        width: 130px;
         background-color: rgb(30,30,30);
         color: white;
         border: none;
-        cursor: pointer; /* El işareti eklendi */
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 5px;
+        z-index: 999;
       }
       #redirectButton:hover {
-        background-color: rgb(50,50,50); /* Hover efekti */
+        background-color: rgb(50,50,50);
       }
     </style>
   </head>
   <body>
     <h2>AnoChat</h2>
     <div id="chatBox"></div>
-    <!-- DÜZELTME: div yerine button elementi -->
-    <button id="redirectButton">Git</button>
+    <button id="redirectButton">Mesaj Gönder</button>
 
     <script>
       const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
@@ -64,31 +66,27 @@
       }
 
       function appendMessage(msg) {
-  const div = document.createElement('div');
-  div.style.margin = "10px 0";
+        const div = document.createElement('div');
+        div.style.margin = "10px 0";
 
-  // Kullanıcı adı + metin mesaj
-  const textPart = document.createElement('div');
-  textPart.textContent = `${msg.user_name}: ${msg.content}`;
-  div.appendChild(textPart);
+        const textPart = document.createElement('div');
+        textPart.textContent = `${msg.user_name}: ${msg.content}`;
+        div.appendChild(textPart);
 
-  // Eğer img_url varsa göster
-  if (msg.img_url) {
-    const img = document.createElement('img');
-    img.src = msg.img_url;
-    img.alt = "görsel";
-    img.style.maxWidth = "200px";
-    img.style.borderRadius = "8px";
-    img.style.marginTop = "5px";
-    div.appendChild(img);
-  }
+        if (msg.img_url) {
+          const img = document.createElement('img');
+          img.src = msg.img_url;
+          img.alt = "görsel";
+          img.style.maxWidth = "200px";
+          img.style.borderRadius = "8px";
+          img.style.marginTop = "5px";
+          div.appendChild(img);
+        }
 
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
 
-
-      // DÜZELTME: Doğru element ID'si ve DOM yükleme kontrolü
       document.addEventListener('DOMContentLoaded', () => {
         fetchMessages();
         document.getElementById("redirectButton").addEventListener("click", function() {
