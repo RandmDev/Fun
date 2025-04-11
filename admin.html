@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <title>Admin Mesaj Paneli</title>
     
-    <!-- Kütüphaneler -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- 1. ÖNCE SUPABASE KÜTÜPHANESİ -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     
+    <!-- 2. SONRA CRYPTOJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
     <style>
-        /* CSS Listesi Aynı Kalıyor */
+        /* CSS KODLARI (Öncekiyle Aynı) */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f5ff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 350px; }
         ul.form-list { list-style: none; padding: 0; margin: 0; }
@@ -23,7 +25,7 @@
     </style>
 </head>
 <body>
-    <!-- HTML Listesi Aynı -->
+    <!-- HTML YAPISI (Öncekiyle Aynı) -->
     <div class="container">
         <h2 style="text-align: center; color: #2c3e50;">Admin Mesaj Gönder</h2>
         <form id="loginForm" onsubmit="return login(event)">
@@ -39,23 +41,29 @@
     </div>
 
     <script>
-        // JavaScript Düzeltmesi: Admin tanımı üste alındı
-        const admin = { // ✅ Önce admin tanımlandı
+        // ✅ DÜZELTİLMİŞ SUPABASE BAĞLANTISI
+        // 1. Önce sabitler
+        const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M';
+        
+        // 2. Sonra client oluşturma
+        const supabaseClient = window.supabase.createClient( // ✅ window üzerinden erişim
+            SUPABASE_URL, 
+            SUPABASE_ANON_KEY
+        );
+
+        // 3. Admin bilgileri
+        const admin = {
             userHash: "a0056c7a42dbbb427642c8a01b945b4e4f35e87de937daa6358a9be14b2a2be3",
             passwordHash: "94ba809b4039ccb7fae123c146abaff0118c167247139c2c61df99ca9f03e286",
             userHashTime: 1,
             passwordHashTime: 2
         };
 
-        const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M';
-        
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // ✅ Artık admin tanımlı
-
         async function login(event) {
             event.preventDefault();
 
-            // Element listesi
+            // Elementler
             const elements = {
                 username: document.getElementById('username').value,
                 password: document.getElementById('password').value,
@@ -63,33 +71,38 @@
                 displayName: document.getElementById('sn').value || 'anon'
             };
 
-            // Hash fonksiyonu
+            // Hash hesaplama fonksiyonu
             const calculateHash = (value, iterations) => {
                 let hash = value;
-                for(let i = 0; i < iterations; i++) hash = CryptoJS.SHA256(hash).toString();
+                for(let i = 0; i < iterations; i++) {
+                    hash = CryptoJS.SHA256(hash).toString();
+                }
                 return hash;
             };
 
             try {
                 // Kimlik doğrulama
-                const isAuth = (
+                const isValidUser = (
                     calculateHash(elements.username, admin.userHashTime) === admin.userHash &&
                     calculateHash(elements.password, admin.passwordHashTime) === admin.passwordHash
                 );
-                if(!isAuth) throw new Error("Geçersiz kimlik bilgileri!");
+                
+                if(!isValidUser) throw new Error("Yetkisiz erişim!");
 
                 // Veri gönderme
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('messages')
-                    .insert([{ 
-                        content: elements.messageInput.value, 
-                        user_name: elements.displayName 
+                    .insert([{
+                        content: elements.messageInput.value,
+                        user_name: elements.displayName
                     }]);
 
-                error ? 
-                    document.getElementById('message').textContent = `⛔ Hata: ${error.message}` : 
-                    (document.getElementById('message').textContent = "✅ Mesaj gönderildi!", elements.messageInput.value = '');
-                
+                if(error) throw error;
+
+                // Başarılı mesajı
+                document.getElementById('message').textContent = "✅ Mesaj başarıyla iletildi!";
+                elements.messageInput.value = "";
+
             } catch(error) {
                 document.getElementById('message').textContent = `⛔ Hata: ${error.message}`;
             }
