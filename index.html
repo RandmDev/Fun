@@ -1,1 +1,30 @@
-
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+      const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      async function fetchMessages() {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .order('created_at', { ascending: true })
+      chatBox.innerHTML = ''
+      data.forEach(msg => {
+        appendMessage(msg)
+      })
+    }
+      fetchMessages();
+    </script>
+    <style>
+      body {background-color: black;}
+    </style>
+    <title></title>
+  </head>
+  <body>
+    <h2>AnoChat</h2>
+  <div id="chatBox" style="height: 300px; overflow-y: auto; border: 1px solid #ccc;"></div>
+  </body>
+</html>
