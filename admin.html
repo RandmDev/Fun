@@ -2,7 +2,13 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>Admin Giriş</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
+    const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co'
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M'
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
     const admin = {
         userHash: "a0056c7a42dbbb427642c8a01b945b4e4f35e87de937daa6358a9be14b2a2be3",
         passwordHash: "94ba809b4039ccb7fae123c146abaff0118c167247139c2c61df99ca9f03e286",
@@ -15,6 +21,10 @@
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+        const text = document.getElementById('text');
+        const submit = document.getElementById('button');
+        const name = document.getElementById('sn');
+        
 
         // Kullanıcı adını admin.userHashTime kadar hash'le
         let hashedUsername = username;
@@ -29,7 +39,12 @@
         }
 
         if (hashedUsername === admin.userHash && hashedPassword === admin.passwordHash) {
-            document.getElementById('message').textContent = "bu bir test mesajıdır | -BETA-";
+            const content = messageInput.value
+      const user_name = usernameInput.value || 'anon'
+      if (!content) return
+      await supabase.from('messages').insert([{ content, user_name }])
+      messageInput.value = ''
+            document.getElementById('message').textContent = "Mesaj Başarıyla Gönderildi";
         } else {
             document.getElementById('message').textContent = "Hatalı kullanıcı adı veya şifre!";
         }
@@ -97,7 +112,7 @@
                 <label>Gözüken İsim</label>
                 <input type="text" id="sn">
             </div>
-            <button type="submit">Giriş Yap</button>
+            <button type="submit" id="button">Mesaj Gönder</button>
         </form>
         <div id="message" style="color: red; margin-top: 10px;"></div>
     </div>
