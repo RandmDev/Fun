@@ -1,122 +1,183 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Admin Giriş</title>
+    <meta charset="UTF-8">
+    <title>Admin Mesaj Paneli</title>
+    
+    <!-- Gerekli Kütüphaneler -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script>
-    const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co'
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M'
-
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-    const admin = {
-        userHash: "a0056c7a42dbbb427642c8a01b945b4e4f35e87de937daa6358a9be14b2a2be3",
-        passwordHash: "94ba809b4039ccb7fae123c146abaff0118c167247139c2c61df99ca9f03e286",
-        userHashTime: 1,
-        passwordHashTime: 2
-    };
-
-    function login(event) {
-        event.preventDefault();
-
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const text = document.getElementById('text');
-        const submit = document.getElementById('button');
-        const name = document.getElementById('sn');
-        
-
-        // Kullanıcı adını admin.userHashTime kadar hash'le
-        let hashedUsername = username;
-        for (let i = 0; i < admin.userHashTime; i++) {
-            hashedUsername = CryptoJS.SHA256(hashedUsername).toString();
-        }
-
-        // Şifreyi admin.passwordHashTime kadar hash'le
-        let hashedPassword = password;
-        for (let i = 0; i < admin.passwordHashTime; i++) {
-            hashedPassword = CryptoJS.SHA256(hashedPassword).toString();
-        }
-
-        if (hashedUsername === admin.userHash && hashedPassword === admin.passwordHash) {
-            const content = messageInput.value
-      const user_name = usernameInput.value || 'anon'
-      if (!content) return
-      await supabase.from('messages').insert([{ content, user_name }])
-      messageInput.value = ''
-            document.getElementById('message').textContent = "Mesaj Başarıyla Gönderildi";
-        } else {
-            document.getElementById('message').textContent = "Hatalı kullanıcı adı veya şifre!";
-        }
-    }
-</script>
-
+    
     <style>
+        /* CSS Listesi */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f5ff;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f2f5;
         }
 
-        .login-container {
+        .container {
             background: white;
             padding: 2rem;
-            border-radius: 8px;
-            width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 350px;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
+        ul.form-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li.form-item {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
         }
 
         input {
             width: 100%;
-            padding: 8px;
-            margin-top: 4px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            outline: none;
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background-color: #3498db;
+            padding: 12px;
+            background: #3498db;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 1rem;
+            color: #e74c3c;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Admin Girişi</h2>
+    <!-- HTML Listesi -->
+    <div class="container">
+        <h2 style="text-align: center; color: #2c3e50;">Admin Mesaj Gönder</h2>
         <form id="loginForm" onsubmit="return login(event)">
-            <div class="form-group">
-                <label>Kullanıcı Adı</label>
-                <input type="text" id="username" required>
-            </div>
-            <div class="form-group">
-                <label>Şifre</label>
-                <input type="password" id="password" required>
-            </div>
-            <div class="form-group">
-                <label>Mesaj</label>
-                <input type="text" id="text">
-            </div>
-            <div class="form-group">
-                <label>Gözüken İsim</label>
-                <input type="text" id="sn">
-            </div>
-            <button type="submit" id="button">Mesaj Gönder</button>
+            <ul class="form-list">
+                <li class="form-item">
+                    <label for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username" required>
+                </li>
+                
+                <li class="form-item">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" required>
+                </li>
+                
+                <li class="form-item">
+                    <label for="text">Mesaj İçeriği</label>
+                    <input type="text" id="text">
+                </li>
+                
+                <li class="form-item">
+                    <label for="sn">Görünen İsim</label>
+                    <input type="text" id="sn">
+                </li>
+                
+                <li class="form-item">
+                    <button type="submit">Mesajı Gönder</button>
+                </li>
+            </ul>
+            <div id="message"></div>
         </form>
-        <div id="message" style="color: red; margin-top: 10px;"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        // JavaScript Fonksiyonları
+        const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M';
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        const admin = {
+            userHash: "a0056c7a42dbbb427642c8a01b945b4e4f35e87de937daa6358a9be14b2a2be3",
+            passwordHash: "94ba809b4039ccb7fae123c146abaff0118c167247139c2c61df99ca9f03e286",
+            userHashTime: 1,
+            passwordHashTime: 2
+        };
+
+        async function login(event) {
+            event.preventDefault();
+
+            // Elementlerin Listesi
+            const elements = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                messageInput: document.getElementById('text'),
+                displayName: document.getElementById('sn').value || 'anon'
+            };
+
+            // Hash Hesaplama Fonksiyonu
+            const calculateHash = (value, iterations) => {
+                let hash = value;
+                for(let i = 0; i < iterations; i++) {
+                    hash = CryptoJS.SHA256(hash).toString();
+                }
+                return hash;
+            };
+
+            try {
+                // Kimlik Doğrulama
+                const isAuthenticated = (
+                    calculateHash(elements.username, admin.userHashTime) === admin.userHash &&
+                    calculateHash(elements.password, admin.passwordHashTime) === admin.passwordHash
+                );
+
+                if(!isAuthenticated) throw new Error("Hatalı giriş!");
+
+                // Mesaj Gönderme
+                const { error } = await supabase
+                    .from('messages')
+                    .insert([{
+                        content: elements.messageInput.value,
+                        user_name: elements.displayName
+                    }]);
+
+                if(error) throw error;
+
+                // Başarılı Durumu
+                document.getElementById('message').textContent = "✅ Mesaj başarıyla gönderildi!";
+                elements.messageInput.value = '';
+                
+            } catch (error) {
+                document.getElementById('message').textContent = `⛔ Hata: ${error.message}`;
+            }
+        }
+    </script>
 </body>
 </html>
