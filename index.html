@@ -64,12 +64,29 @@
       }
 
       function appendMessage(msg) {
-        const div = document.createElement('div');
-        div.textContent = `${msg.user_name}: ${msg.content}`;
-        div.style.margin = "5px 0";
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
+  const div = document.createElement('div');
+  div.style.margin = "10px 0";
+
+  // Kullanıcı adı + metin mesaj
+  const textPart = document.createElement('div');
+  textPart.textContent = `${msg.user_name}: ${msg.content}`;
+  div.appendChild(textPart);
+
+  // Eğer img_url varsa göster
+  if (msg.img_url) {
+    const img = document.createElement('img');
+    img.src = msg.img_url;
+    img.alt = "görsel";
+    img.style.maxWidth = "200px";
+    img.style.borderRadius = "8px";
+    img.style.marginTop = "5px";
+    div.appendChild(img);
+  }
+
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 
       // DÜZELTME: Doğru element ID'si ve DOM yükleme kontrolü
       document.addEventListener('DOMContentLoaded', () => {
