@@ -11,10 +11,11 @@
             background: #121212;
             color: #ffffff;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding-top: 50px;
         }
 
         .container {
@@ -23,6 +24,23 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.7);
             width: 320px;
+            margin-bottom: 15px;
+        }
+
+        /* YENİ BUTON STİLİ */
+        .small-btn {
+            width: 320px;
+            padding: 8px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .small-btn:hover {
+            background: #0056b3;
         }
 
         h2 {
@@ -104,6 +122,9 @@
         <div id="message"></div>
     </div>
 
+    <!-- CONTAINER ALTINDAKİ YENİ BUTON -->
+    <button class="small-btn" onclick="window.location.href='https://randmdev.github.io/Fun'">Fun Sitesine Git</button>
+
     <script>
         const SUPABASE_URL = 'https://rtgfyzaznstvtudxzqvr.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0Z2Z5emF6bnN0dnR1ZHh6cXZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODQ4NjgsImV4cCI6MjA1OTk2MDg2OH0.3pvOc252sqY5SOc2IXEM8XO7E403cc0UEDI-XtjV61M';
@@ -140,7 +161,6 @@
             try {
                 if (!await validateAdmin()) throw new Error('Yetkisiz işlem!');
                 
-                // Tüm mesajları sil
                 const { error } = await supabase
                     .from('messages')
                     .delete()
@@ -162,7 +182,7 @@
                 if (!await validateAdmin()) throw new Error('Geçersiz kimlik bilgileri!');
 
                 const content = document.getElementById('text').value;
-                const userName = document.getElementById('sn').value || 'anon';
+                const userName = document.getElementById('sn').value || null;
                 const imgUrl = document.getElementById('img_url').value || null;
 
                 const { error } = await supabase.from('messages').insert([{ 
@@ -185,7 +205,6 @@
             msgElement.style.color = type === 'success' ? '#0f0' : '#f00';
         }
 
-        // Form submit eventini bağla
         document.getElementById('messageForm').addEventListener('submit', login);
     </script>
 </body>
