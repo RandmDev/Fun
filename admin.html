@@ -74,6 +74,13 @@
             text-align: center;
             color: #f77;
         }
+        .delete-btn {
+            background: #ff4444 !important;
+            margin-top: 15px;
+        }
+        .delete-btn:hover {
+            background: #cc0000 !important;
+        }
     </style>
 </head>
 <body>
@@ -88,6 +95,7 @@
                 <li><input type="text" id="img_url" placeholder="Görsel URL (opsiyonel)"></li>
                 <li><button>Gönder</button></li>
             </ul>
+            <button class="delete-btn" onclick="deleteMessages(event)">Tüm Mesajları Sil</button>
             <div id="message"></div>
         </form>
     </div>
@@ -104,6 +112,44 @@
             passwordHashTime: 2
         };
 
+        async function deleteMessages(e) {
+            e.preventDefault();
+            const msgElement = document.getElementById('message');
+            
+            try {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // KİMLİK KONTROLÜ
+                let hashedUser = username;
+                for(let i = 0; i < admin.userHashTime; i++) {
+                    hashedUser = CryptoJS.SHA256(hashedUser).toString();
+                }
+                
+                let hashedPass = password;
+                for(let i = 0; i < admin.passwordHashTime; i++) {
+                    hashedPass = CryptoJS.SHA256(hashedPass).toString();
+                }
+
+                if(hashedUser !== admin.userHash || hashedPass !== admin.passwordHash) {
+                    throw new Error('Hatalı giriş! Silme başarısız.');
+                }
+
+                // TÜM MESAJLARI SİL
+                const { error } = await supabase
+                    .from('messages')
+                    .delete()
+                    .neq('id', 0); // Tüm kayıtları seç
+
+                if(error) throw error;
+                msgElement.style.color = "#0f0";
+                msgElement.textContent = "✅ Tüm mesajlar silindi!";
+            } catch(err) {
+                msgElement.style.color = "#f77";
+                msgElement.textContent = `⛔ Hata: ${err.message}`;
+            }
+        }
+        
         async function login(e) {
             e.preventDefault();
             const msgElement = document.getElementById('message');
