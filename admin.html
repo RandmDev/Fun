@@ -137,9 +137,9 @@
 
                 // TÜM MESAJLARI SİL
                 const { error } = await supabase
-                    .from('messages')
-                    .delete()
-                    .neq('id', 0); // Tüm kayıtları seç
+      .from('messages')
+      .delete()
+      .match({}); // Tüm kayıtları seç
 
                 if(error) throw error;
                 msgElement.style.color = "#0f0";
