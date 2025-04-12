@@ -57,7 +57,6 @@
         button {
             width: 100%;
             padding: 10px;
-            background: #444;
             color: white;
             border: none;
             border-radius: 5px;
@@ -65,39 +64,44 @@
             transition: background 0.3s;
         }
 
-        button:hover {
+        .submit-btn {
+            background: #444;
+        }
+
+        .submit-btn:hover {
             background: #666;
+        }
+
+        .delete-btn {
+            background: #ff4444;
+            margin-top: 15px;
+        }
+
+        .delete-btn:hover {
+            background: #cc0000;
         }
 
         #message {
             margin-top: 10px;
             text-align: center;
-            color: #f77;
-        }
-        .delete-btn {
-            background: #ff4444 !important;
-            margin-top: 15px;
-        }
-        .delete-btn:hover {
-            background: #cc0000 !important;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Admin Mesaj Gönder</h2>
-        <form onsubmit="return login(event)">
+        <form id="messageForm">
             <ul>
                 <li><input type="text" id="username" placeholder="Kullanıcı Adı" required></li>
                 <li><input type="password" id="password" placeholder="Şifre" required></li>
                 <li><input type="text" id="text" placeholder="Mesaj"></li>
                 <li><input type="text" id="sn" placeholder="Görünen İsim"></li>
                 <li><input type="text" id="img_url" placeholder="Görsel URL (opsiyonel)"></li>
-                <li><button>Gönder</button></li>
+                <li><button type="submit" class="submit-btn">Gönder</button></li>
             </ul>
-            <button class="delete-btn" onclick="deleteMessages(event)">Tüm Mesajları Sil</button>
-            <div id="message"></div>
         </form>
+        <button class="delete-btn" onclick="deleteMessages()">Tüm Mesajları Sil</button>
+        <div id="message"></div>
     </div>
 
     <script>
@@ -112,63 +116,55 @@
             passwordHashTime: 2
         };
 
-        async function deleteMessages(e) {
-            e.preventDefault();
+        async function validateAdmin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            let hashedUser = username;
+            for(let i = 0; i < admin.userHashTime; i++) {
+                hashedUser = CryptoJS.SHA256(hashedUser).toString();
+            }
+            
+            let hashedPass = password;
+            for(let i = 0; i < admin.passwordHashTime; i++) {
+                hashedPass = CryptoJS.SHA256(hashedPass).toString();
+            }
+
+            return hashedUser === admin.userHash && hashedPass === admin.passwordHash;
+        }
+
+        async function deleteMessages() {
             const msgElement = document.getElementById('message');
+            msgElement.textContent = '';
             
             try {
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-
-                // KİMLİK KONTROLÜ
-                let hashedUser = username;
-                for(let i = 0; i < admin.userHashTime; i++) {
-                    hashedUser = CryptoJS.SHA256(hashedUser).toString();
-                }
+                if (!await validateAdmin()) throw new Error('Yetkisiz işlem!');
                 
-                let hashedPass = password;
-                for(let i = 0; i < admin.passwordHashTime; i++) {
-                    hashedPass = CryptoJS.SHA256(hashedPass).toString();
-                }
-
-                if(hashedUser !== admin.userHash || hashedPass !== admin.passwordHash) {
-                    throw new Error('Hatalı giriş! Silme başarısız.');
-                }
-
-                // TÜM MESAJLARI SİL
+                // Tüm mesajları sil
                 const { error } = await supabase
-      .from('messages')
-      .delete()
-      .filter('condition', 'eq', '1=1'); 
+                    .from('messages')
+                    .delete()
+                    .not('created_at', 'is', null);
 
                 if(error) throw error;
-                msgElement.style.color = "#0f0";
-                msgElement.textContent = "✅ Tüm mesajlar silindi!";
+                showMessage('✅ Tüm mesajlar silindi!', 'success');
             } catch(err) {
-                msgElement.style.color = "#f77";
-                msgElement.textContent = `⛔ Hata: ${err.message}`;
+                showMessage(`⛔ Hata: ${err.message}`, 'error');
             }
         }
-        
+
         async function login(e) {
             e.preventDefault();
             const msgElement = document.getElementById('message');
+            msgElement.textContent = '';
             
             try {
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
+                if (!await validateAdmin()) throw new Error('Geçersiz kimlik bilgileri!');
+
                 const content = document.getElementById('text').value;
                 const userName = document.getElementById('sn').value || 'anon';
                 const imgUrl = document.getElementById('img_url').value || null;
 
-                let hashedUser = username;
-                for(let i = 0; i < admin.userHashTime; i++) hashedUser = CryptoJS.SHA256(hashedUser).toString();
-                
-                let hashedPass = password;
-                for(let i = 0; i < admin.passwordHashTime; i++) hashedPass = CryptoJS.SHA256(hashedPass).toString();
-
-                if(hashedUser !== admin.userHash || hashedPass !== admin.passwordHash) throw new Error('Hatalı giriş!');
-                
                 const { error } = await supabase.from('messages').insert([{ 
                     content, 
                     user_name: userName,
@@ -176,14 +172,21 @@
                 }]);
 
                 if(error) throw error;
-                msgElement.style.color = "#0f0";
-                msgElement.textContent = "✅ Gönderildi!";
+                showMessage('✅ Mesaj gönderildi!', 'success');
                 document.getElementById('text').value = '';
             } catch(err) {
-                msgElement.style.color = "#f77";
-                msgElement.textContent = `⛔ Hata: ${err.message}`;
+                showMessage(`⛔ Hata: ${err.message}`, 'error');
             }
         }
+
+        function showMessage(text, type) {
+            const msgElement = document.getElementById('message');
+            msgElement.textContent = text;
+            msgElement.style.color = type === 'success' ? '#0f0' : '#f00';
+        }
+
+        // Form submit eventini bağla
+        document.getElementById('messageForm').addEventListener('submit', login);
     </script>
 </body>
 </html>
