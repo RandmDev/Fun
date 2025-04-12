@@ -139,7 +139,7 @@
                 const { error } = await supabase
       .from('messages')
       .delete()
-      .match({}); // Tüm kayıtları seç
+      .filter('condition', 'eq', '1=1'); 
 
                 if(error) throw error;
                 msgElement.style.color = "#0f0";
